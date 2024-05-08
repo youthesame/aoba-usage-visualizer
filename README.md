@@ -2,8 +2,6 @@
 
 東北大学のスーパーコンピュータ AOBA の利用時間を可視化するための Streamlit アプリケーションです。
 
-[https://aoba-usage-visualizer.streamlit.app](https://aoba-usage-visualizer.streamlit.app)
-
 ## アプリの概要
 
 AOBA 利用時間可視化アプリは、AOBA-A, B の利用者ポータルからダウンロードしたプロジェクトジャーナル CSV（plist.csv）をアップロードすることで、プロジェクト全体の使用時間や料金、各ユーザーの使用状況を把握することができるツールです。
@@ -44,7 +42,7 @@ AOBA 利用時間可視化アプリは、AOBA-A, B の利用者ポータルか�
 1. このリポジトリをクローンまたはダウンロードします。
 
 ```
-git clone https://github.com/your-repo-url.git
+git clone https://github.com/youthesame/aoba-usage-visualizer.git
 ```
 
 2. 必要なライブラリをインストールします。
