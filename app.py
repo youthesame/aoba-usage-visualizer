@@ -62,7 +62,7 @@ def main():
         user_data = pd.DataFrame({"使用時間（時間）": user_usage, "使用料金（円）": user_cost})
 
         # タブを使用して使用時間と料金を切り替え表示
-        tab1, tab2 = st.tabs(["使用時間", "使用料金"])
+        tab1, tab2, tab3 = st.tabs(["使用時間", "使用料金", "グループ全体の使用状況"])
         with tab1:
             fig1 = px.bar(
                 user_data,
@@ -100,6 +100,42 @@ def main():
             )
             fig2.update_traces(marker_color=px.colors.qualitative.Plotly[1])
             st.plotly_chart(fig2, use_container_width=True)
+
+        with tab3:
+            # 2020年以降のデータのみを使用
+            group_df = filtered_df[
+                pd.to_datetime(filtered_df["終了日時"], format="%Y%m%d%H%M%S") >= pd.to_datetime("2020-01-01")
+            ]
+
+            # グループ全体の日付に対する使用時間と使用料金を計算
+            group_usage = (
+                group_df.groupby(pd.to_datetime(group_df["終了日時"], format="%Y%m%d%H%M%S"))[
+                    "ノード時間（使用量）"
+                ].sum()
+                / 3600
+            )
+            group_cost = group_usage * 22
+            group_data = pd.DataFrame({"使用時間（時間）": group_usage, "使用料金（円）": group_cost})
+
+            # 累積の使用時間と使用料金を計算
+            group_data["累積使用時間（時間）"] = group_data["使用時間（時間）"].cumsum()
+            group_data["累積使用料金（円）"] = group_data["使用料金（円）"].cumsum()
+
+            fig3 = px.area(
+                group_data,
+                x=group_data.index,
+                y=["累積使用時間（時間）", "累積使用料金（円）"],
+                labels={"x": "日付", "value": "累積使用量"},
+                title="グループ全体の累積使用時間と料金の推移",
+                template="plotly_white",
+            )
+            fig3.update_layout(
+                plot_bgcolor="rgba(0,0,0,0)",
+                paper_bgcolor="rgba(0,0,0,0)",
+                xaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+                yaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+            )
+            st.plotly_chart(fig3, use_container_width=True)
 
         # 利用者番号ごとの使用時間、料金、ジョブ詳細を表示
         st.subheader("利用者別の使用状況")
