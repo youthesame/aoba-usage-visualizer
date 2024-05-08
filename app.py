@@ -111,7 +111,7 @@ def main():
                 )
 
     st.markdown(
-        '<div class="github-link"><a href="https://github.com/your-repo-url" target="_blank">GitHub</a></div>',
+        '<div class="github-link"><a href="https://github.com/youthesame/aoba-usage-visualizer.git" target="_blank">GitHub</a></div>',
         unsafe_allow_html=True,
     )
 
