@@ -23,14 +23,6 @@ st.markdown(
     .css-1qrvfrg {
         color: #e1e1e1;
     }
-
-    .github-link {
-        font-size: 12px;
-        color: #999999;
-        position: absolute;
-        top: 5px;
-        left: 10px;
-    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -63,57 +55,88 @@ def main():
         col1.metric("合計使用時間", f"{total_node_hours:.2f} 時間", delta_color="off")
         col2.metric("合計使用料金", f"¥{total_node_hours * 22:.2f}", delta_color="off")
 
-        # 利用者ごとの使用時間を計算
+        # 利用者ごとの使用時間と料金を計算
         user_usage = filtered_df.groupby("利用者番号")["ノード時間（使用量）"].sum() / 3600
         user_usage = user_usage.sort_index(ascending=False)
+        user_cost = user_usage * 22
+        user_data = pd.DataFrame({"使用時間（時間）": user_usage, "使用料金（円）": user_cost})
 
-        # 利用者ごとの使用時間を横棒グラフで表示
-        fig = px.bar(
-            user_usage,
-            x=user_usage.values,
-            y=user_usage.index,
-            orientation="h",
-            labels={"x": "使用時間（時間）", "y": "利用者番号"},
-            title="利用者ごとの使用時間",
-            template="plotly_white",
-        )
-        fig.update_layout(
-            plot_bgcolor="rgba(0,0,0,0)",
-            paper_bgcolor="rgba(0,0,0,0)",
-            xaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
-            yaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        # タブを使用して使用時間と料金を切り替え表示
+        tab1, tab2 = st.tabs(["使用時間", "使用料金"])
+        with tab1:
+            fig1 = px.bar(
+                user_data,
+                x=user_data["使用時間（時間）"],
+                y=user_data.index,
+                orientation="h",
+                labels={"x": "使用時間（時間）", "y": "利用者番号"},
+                title="利用者ごとの使用時間",
+                template="plotly_white",
+            )
+            fig1.update_layout(
+                plot_bgcolor="rgba(0,0,0,0)",
+                paper_bgcolor="rgba(0,0,0,0)",
+                xaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+                yaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+            )
+            fig1.update_traces(marker_color=px.colors.qualitative.Plotly[0])
+            st.plotly_chart(fig1, use_container_width=True)
 
-        # 利用者番号ごとの使用時間と金額を表示
+        with tab2:
+            fig2 = px.bar(
+                user_data,
+                x=user_data["使用料金（円）"],
+                y=user_data.index,
+                orientation="h",
+                labels={"x": "使用料金（円）", "y": "利用者番号"},
+                title="利用者ごとの使用料金",
+                template="plotly_white",
+            )
+            fig2.update_layout(
+                plot_bgcolor="rgba(0,0,0,0)",
+                paper_bgcolor="rgba(0,0,0,0)",
+                xaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+                yaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+            )
+            fig2.update_traces(marker_color=px.colors.qualitative.Plotly[1])
+            st.plotly_chart(fig2, use_container_width=True)
+
+        # 利用者番号ごとの使用時間、料金、ジョブ詳細を表示
         st.subheader("利用者別の使用状況")
         user_ids = sorted(filtered_df["利用者番号"].unique())
 
         for user_id in user_ids:
-            user_df = filtered_df[filtered_df["利用者番号"] == user_id]
+            user_df = filtered_df[filtered_df["利用者番号"] == user_id].copy()
             user_node_time = user_df["ノード時間（使用量）"].sum()
             user_node_hours = user_node_time / 3600
+            user_node_cost = user_node_hours * 22
 
             # 投入日時、開始日時、終了日時を時間形式に変換
-            user_df["投入日時"] = pd.to_datetime(user_df["投入日時"], format="%Y%m%d%H%M%S")
-            user_df["開始日時"] = pd.to_datetime(user_df["開始日時"], format="%Y%m%d%H%M%S")
-            user_df["終了日時"] = pd.to_datetime(user_df["終了日時"], format="%Y%m%d%H%M%S")
+            user_df.loc[:, "投入日時"] = pd.to_datetime(user_df["投入日時"], format="%Y%m%d%H%M%S", errors="coerce")
+            user_df.loc[:, "開始日時"] = pd.to_datetime(user_df["開始日時"], format="%Y%m%d%H%M%S", errors="coerce")
+            user_df.loc[:, "終了日時"] = pd.to_datetime(user_df["終了日時"], format="%Y%m%d%H%M%S", errors="coerce")
 
             with st.expander(f"利用者番号: {user_id}"):
                 col1, col2 = st.columns(2)
                 col1.metric("使用時間", f"{user_node_hours:.2f} 時間", delta_color="off")
-                col2.metric("使用料金", f"¥{user_node_hours * 22:.2f}", delta_color="off")
+                col2.metric("使用料金", f"¥{user_node_cost:.2f}", delta_color="off")
 
                 st.write("---")
+                user_df.loc[:, "料金（円）"] = user_df["ノード時間（使用量）"] / 3600 * 22
                 st.dataframe(
-                    user_df[["キュー名", "投入日時", "開始日時", "終了日時", "経過時間", "ノード時間（使用量）"]],
+                    user_df[
+                        [
+                            "キュー名",
+                            "投入日時",
+                            "開始日時",
+                            "終了日時",
+                            "経過時間",
+                            "ノード時間（使用量）",
+                            "料金（円）",
+                        ]
+                    ],
                     width=800,
                 )
-
-    st.markdown(
-        '<div class="github-link"><a href="https://github.com/youthesame/aoba-usage-visualizer.git" target="_blank">GitHub</a></div>',
-        unsafe_allow_html=True,
-    )
 
 
 if __name__ == "__main__":
