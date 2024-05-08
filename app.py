@@ -3,7 +3,7 @@ import plotly.express as px
 import streamlit as st
 
 # Streamlitのカスタマイズ
-st.set_page_config(page_title="スパコン利用時間可視化アプリ", layout="wide")
+st.set_page_config(page_title="スパコン利用時間可視化アプリ")
 st.markdown(
     """
     <style>
