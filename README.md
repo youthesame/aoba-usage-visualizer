@@ -2,7 +2,7 @@
 
 東北大学のスーパーコンピュータ AOBA の利用時間を可視化するための Streamlit アプリケーションです。
 
-[https://share.streamlit.io/your-username/your-repo-name/main/app.py](https://share.streamlit.io/your-username/your-repo-name/main/app.py)
+[https://aoba-usage-visualizer.streamlit.app](https://aoba-usage-visualizer.streamlit.app)
 
 ## アプリの概要
 
@@ -18,7 +18,7 @@ AOBA 利用時間可視化アプリは、AOBA-A, B の利用者ポータルか�
 
 1. AOBA-A, B の[利用者ポータル](https://portal.ss.cc.tohoku.ac.jp/thkportal/riyosha_login/)にログインします。
 2. プロジェクトジャーナル CSV（plist.csv）をダウンロードします。
-3. [アプリ](https://share.streamlit.io/your-username/your-repo-name/main/app.py)にアクセスします。
+3. [アプリ](https://aoba-usage-visualizer.streamlit.app)にアクセスします。
 4. CSV ファイルをアップロードします。
 5. アップロード後、自動的に使用状況が表示されます。
 
@@ -26,7 +26,7 @@ AOBA 利用時間可視化アプリは、AOBA-A, B の利用者ポータルか�
 
 このアプリケーションは Streamlit Cloud 上でホストされています。以下のリンクからアクセスできます。
 
-[https://share.streamlit.io/your-username/your-repo-name/main/app.py](https://share.streamlit.io/your-username/your-repo-name/main/app.py)
+[https://aoba-usage-visualizer.streamlit.app](https://aoba-usage-visualizer.streamlit.app)
 
 ## ローカルでの使用方法
 
