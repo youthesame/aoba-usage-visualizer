@@ -76,8 +76,8 @@ def main():
             fig1.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)",
                 paper_bgcolor="rgba(0,0,0,0)",
-                xaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
-                yaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+                xaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
+                yaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
             )
             fig1.update_traces(marker_color=px.colors.qualitative.Plotly[0])
             st.plotly_chart(fig1, use_container_width=True)
@@ -95,8 +95,8 @@ def main():
             fig2.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)",
                 paper_bgcolor="rgba(0,0,0,0)",
-                xaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
-                yaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+                xaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
+                yaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
             )
             fig2.update_traces(marker_color=px.colors.qualitative.Plotly[1])
             st.plotly_chart(fig2, use_container_width=True)
@@ -121,7 +121,7 @@ def main():
             group_data["累積使用時間（時間）"] = group_data["使用時間（時間）"].cumsum()
             group_data["累積使用料金（円）"] = group_data["使用料金（円）"].cumsum()
 
-            fig3 = px.area(
+            fig3 = px.line(
                 group_data,
                 x=group_data.index,
                 y=["累積使用時間（時間）", "累積使用料金（円）"],
@@ -129,11 +129,29 @@ def main():
                 title="グループ全体の累積使用時間と料金の推移",
                 template="plotly_white",
             )
+
             fig3.update_layout(
                 plot_bgcolor="rgba(0,0,0,0)",
                 paper_bgcolor="rgba(0,0,0,0)",
-                xaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
-                yaxis={"showgrid": True, "gridcolor": "lightgray", "gridwidth": 1},
+                xaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
+                yaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
+                legend={"title": ""},
+            )
+
+            fig3.update_traces(
+                mode="lines",
+                line={"width": 2},
+                fill="tozeroy",
+                fillcolor="rgba(0, 0, 255, 0.1)",
+                selector={"name": "累積使用時間（時間）"},
+            )
+
+            fig3.update_traces(
+                mode="lines",
+                line={"width": 2},
+                fill="tozeroy",
+                fillcolor="rgba(255, 0, 0, 0.1)",
+                selector={"name": "累積使用料金（円）"},
             )
             st.plotly_chart(fig3, use_container_width=True)
 
