@@ -3,10 +3,16 @@ import plotly.express as px
 import streamlit as st
 
 # Streamlitのカスタマイズ
-st.set_page_config(page_title="スパコン利用時間可視化アプリ", layout="wide")
+st.set_page_config(page_title="AOBA利用時間可視化アプリ", layout="wide")
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=BIZ+UDGothic&family=JetBrains+Mono&display=swap');
+
+    * {
+        font-family: 'JetBrains Mono', 'BIZ UDGothic', sans-serif;
+    }
+
     body {
         background-color: #1e1e1e;
         color: #e1e1e1;
@@ -23,6 +29,10 @@ st.markdown(
     .css-1qrvfrg {
         color: #e1e1e1;
     }
+
+    .st-emotion-cache-1wivap2 {
+        font-family: 'JetBrains Mono', 'BIZ UDGothic', sans-serif;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -30,14 +40,14 @@ st.markdown(
 
 
 def main():
-    st.title("AOBA 利用時間可視化アプリ")
-    st.write("このアプリは、東北大学のスーパーコンピュータ AOBA の使用時間を可視化するためのツールです。")
+    st.title("AOBA利用時間可視化アプリ")
+    st.write("このアプリは、東北大学のスーパーコンピュータAOBAの使用時間を可視化するためのツールです。")
     st.write(
-        "AOBA-A, B の[利用者ポータル](https://portal.ss.cc.tohoku.ac.jp/thkportal/riyosha_login/)からダウンロードした プロジェクトジャーナルCSV（plist.csv） をアップロードすることで、プロジェクト全体の使用時間や料金、各ユーザーの使用状況を把握することができます。"
+        "AOBA-A,Bの[利用者ポータル](https://portal.ss.cc.tohoku.ac.jp/thkportal/riyosha_login/)からダウンロードしたプロジェクトジャーナルCSV（plist.csv）をアップロードすることで、グループ全体の使用時間や料金、各ユーザーの使用状況を把握することができます。"
     )
 
     # csvファイルのアップロード
-    uploaded_file = st.file_uploader("CSVファイルを選択してください", type="csv")
+    uploaded_file = st.file_uploader("CSVファイルを選択してください。", type="csv")
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file, encoding="shift_jis")
@@ -78,6 +88,7 @@ def main():
                 paper_bgcolor="rgba(0,0,0,0)",
                 xaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
                 yaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
+                font_family="'JetBrains Mono', 'BIZ UDPGothic', sans-serif",
             )
             fig1.update_traces(marker_color=px.colors.qualitative.Plotly[0])
             st.plotly_chart(fig1, use_container_width=True)
@@ -97,6 +108,7 @@ def main():
                 paper_bgcolor="rgba(0,0,0,0)",
                 xaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
                 yaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
+                font_family="'JetBrains Mono', 'BIZ UDPGothic', sans-serif",
             )
             fig2.update_traces(marker_color=px.colors.qualitative.Plotly[1])
             st.plotly_chart(fig2, use_container_width=True)
@@ -136,6 +148,7 @@ def main():
                 xaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
                 yaxis={"showgrid": True, "gridcolor": "darkgray", "gridwidth": 1},
                 legend={"title": ""},
+                font_family="'JetBrains Mono', 'BIZ UDPGothic', sans-serif",
             )
 
             fig3.update_traces(
